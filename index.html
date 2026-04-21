@@ -655,7 +655,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.5);padding:60px 48px 40px}
           <li><div class="scan-dot">📋</div>سجل كامل لكل عمليات المسح السابقة</li>
           <li><div class="scan-dot">🌙</div>وضع ليلي / نهاري · Android وiOS</li>
         </ul>
-        <a href="https://wa.me/972567044600?text=أريد%20تحميل%20Premium%20Scan" target="_blank" class="scan-btn">⬇️ تحميل Premium Scan</a>
+        <a href="https://github.com/devyazanabuali-bit/premiumpos-website/releases/download/v1.1/premiumscan.apk" onclick="window.location.href='https://github.com/devyazanabuali-bit/premiumpos-website/releases/download/v1.1/premiumscan.apk';return false;" class="scan-btn">⬇️ تحميل Premium Scan</a>
       </div>
     </div>
 
@@ -720,7 +720,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.5);padding:60px 48px 40px}
         <div class="download-btn-icon">▶</div>
         <div class="download-btn-text"><small>تحميل من</small><strong>Google Play</strong></div>
       </a>
-      <a href="premiumpos.apk" download class="download-btn">
+      <a href="https://github.com/devyazanabuali-bit/premiumpos-website/releases/download/v1.0/premiumpos.apk" onclick="window.location.href='https://github.com/devyazanabuali-bit/premiumpos-website/releases/download/v1.0/premiumpos.apk';return false;" class="download-btn">
         <div class="download-btn-icon">⬇</div>
         <div class="download-btn-text"><small>تحميل مباشر</small><strong>ملف APK</strong></div>
       </a>
@@ -729,7 +729,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.5);padding:60px 48px 40px}
         <div class="download-btn-text"><small>تواصل معنا</small><strong>واتساب</strong></div>
       </a>
     </div>
-    <p class="apk-note reveal">⚠️ عند تثبيت APK: اذهب لـ الإعدادات ← التطبيقات ← السماح بمصادر غير معروفة</p>
+    <p class="apk-note reveal">⚠️ عند تثبيت APK: الإعدادات ← الأمان ← السماح بمصادر غير معروفة &nbsp;|&nbsp; الملفات على GitHub Releases</p>
   </div>
 </section>
 
@@ -814,6 +814,10 @@ footer{background:var(--ink);color:rgba(255,255,255,.5);padding:60px 48px 40px}
 </footer>
 
 <script>
+function downloadApk(url, filename) {
+  // نفتح الرابط مباشرة — GitHub يبدأ التحميل تلقائياً
+  window.location.href = url;
+}
 const observer = new IntersectionObserver(entries => {
   entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') })
 },{threshold:0.1});
