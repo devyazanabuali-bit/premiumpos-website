@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PremiumPOS — نظام نقطة البيع الاحترافي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0a0a0f;--paper:#f5f3ee;--gold:#c9a84c;--gold2:#e8c97a;--indigo:#3d2fa0;--violet:#6c5ce7;--mint:#00c9a7;--red:#e53935;--card:#fff;--muted:#6b6b7a;--border:rgba(0,0,0,.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Cairo',sans-serif;background:var(--paper);color:var(--ink);overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;backdrop-filter:blur(16px) saturate(180%);background:rgba(245,243,238,.9);border-bottom:1px solid var(--border);transition:box-shadow .3s}
+.nav-logo{font-family:'Tajawal',sans-serif;font-weight:800;font-size:22px;background:linear-gradient(135deg,var(--indigo),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{text-decoration:none;color:var(--ink);font-size:14px;font-weight:600;transition:color .2s}
+.nav-links a:hover{color:var(--indigo)}
+.nav-cta{background:var(--indigo);color:#fff;padding:10px 24px;border-radius:100px;font-size:14px;font-weight:700;text-decoration:none;transition:all .2s;box-shadow:0 4px 20px rgba(61,47,160,.35)}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(61,47,160,.45)}
+
+/* HERO */
+#hero{min-height:100vh;display:flex;align-items:center;padding:140px 48px 80px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 80% 20%,rgba(61,47,160,.12) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 20% 80%,rgba(201,168,76,.15) 0%,transparent 55%),radial-gradient(ellipse 40% 40% at 60% 60%,rgba(0,201,167,.08) 0%,transparent 50%)}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;max-width:1280px;margin:0 auto;position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(61,47,160,.08);border:1px solid rgba(61,47,160,.2);padding:6px 16px;border-radius:100px;font-size:12px;font-weight:700;color:var(--indigo);margin-bottom:24px}
+.hero-badge span{width:6px;height:6px;background:var(--mint);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+h1{font-family:'Tajawal',sans-serif;font-size:clamp(42px,5vw,72px);font-weight:800;line-height:1.1;margin-bottom:24px}
+.h1-accent{background:linear-gradient(135deg,var(--indigo) 0%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:18px;color:var(--muted);line-height:1.7;margin-bottom:40px;max-width:520px}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--indigo);color:#fff;padding:16px 32px;border-radius:100px;font-size:15px;font-weight:700;text-decoration:none;transition:all .25s;box-shadow:0 6px 28px rgba(61,47,160,.4)}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(61,47,160,.5)}
+.btn-secondary{display:inline-flex;align-items:center;gap:10px;background:transparent;color:var(--ink);padding:16px 32px;border-radius:100px;font-size:15px;font-weight:700;text-decoration:none;border:2px solid var(--border);transition:all .25s}
+.btn-secondary:hover{border-color:var(--indigo);color:var(--indigo)}
+.hero-stats{display:flex;gap:40px;margin-top:48px;padding-top:40px;border-top:1px solid var(--border)}
+.stat-num{font-family:'Tajawal',sans-serif;font-size:36px;font-weight:800;color:var(--indigo);display:block}
+.stat-lbl{font-size:12px;color:var(--muted);font-weight:600}
+
+/* PHONE */
+.hero-visual{display:flex;justify-content:center;align-items:center;position:relative}
+.phone-wrap{position:relative;animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+.phone-outer{width:280px;background:linear-gradient(145deg,#1a1a2e,#16213e);border-radius:44px;padding:14px;box-shadow:0 40px 80px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.1)}
+.phone-screen{background:linear-gradient(160deg,#0f0c29,#302b63,#24243e);border-radius:34px;overflow:hidden;aspect-ratio:9/19;position:relative}
+.phone-ui{padding:20px 16px}
+.pui-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.pui-greeting{color:rgba(255,255,255,.6);font-size:11px}
+.pui-name{color:#fff;font-size:15px;font-weight:700}
+.pui-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--violet))}
+.pui-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:16px;margin-bottom:12px}
+.pui-card-label{color:rgba(255,255,255,.5);font-size:10px;margin-bottom:4px}
+.pui-card-val{color:#fff;font-size:22px;font-weight:800;font-family:'Tajawal',sans-serif}
+.pui-card-sub{color:var(--mint);font-size:10px;margin-top:2px}
+.pui-modules{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pui-module{background:rgba(255,255,255,.07);border-radius:14px;padding:12px 10px;border:1px solid rgba(255,255,255,.08);text-align:center}
+.pui-module-icon{font-size:18px;margin-bottom:4px}
+.pui-module-name{color:rgba(255,255,255,.7);font-size:9px;font-weight:600}
+.ring{position:absolute;border-radius:50%;border:1px solid rgba(61,47,160,.2);animation:spin linear infinite}
+.ring-1{width:420px;height:420px;top:-70px;right:-70px;animation-duration:25s}
+.ring-2{width:320px;height:320px;top:-20px;right:-20px;animation-duration:20s;border-color:rgba(201,168,76,.15)}
+.ring-3{width:200px;height:200px;bottom:60px;left:-60px;animation-duration:15s;border-color:rgba(0,201,167,.2)}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+/* SECTIONS */
+section{padding:100px 48px}
+.section-inner{max-width:1280px;margin:0 auto}
+.section-tag{display:inline-block;background:rgba(61,47,160,.08);color:var(--indigo);font-size:12px;font-weight:700;padding:6px 16px;border-radius:100px;margin-bottom:16px}
+.section-title{font-family:'Tajawal',sans-serif;font-size:clamp(32px,4vw,52px);font-weight:800;line-height:1.15;margin-bottom:16px}
+.section-sub{font-size:17px;color:var(--muted);max-width:580px;line-height:1.7}
+
+/* FEATURES */
+#features{background:#fff}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:60px}
+.feature-card{padding:32px;border-radius:24px;border:1px solid var(--border);background:#fff;transition:all .3s;position:relative;overflow:hidden}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--indigo),var(--gold));transform:scaleX(0);transform-origin:right;transition:transform .3s}
+.feature-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.1)}
+.feature-card:hover::before{transform:scaleX(1);transform-origin:left}
+.feature-icon{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px}
+.feature-title{font-size:18px;font-weight:700;margin-bottom:10px}
+.feature-desc{font-size:14px;color:var(--muted);line-height:1.7}
+
+/* STORE TYPES */
+#stores{background:var(--ink);color:#fff}
+#stores .section-title{color:#fff}
+#stores .section-sub{color:rgba(255,255,255,.55)}
+#stores .section-tag{background:rgba(255,255,255,.08);color:var(--gold2)}
+.stores-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:60px}
+.store-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:24px 16px;text-align:center;transition:all .3s}
+.store-card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.2);transform:translateY(-4px)}
+.store-emoji{font-size:36px;margin-bottom:12px;display:block}
+.store-name{color:rgba(255,255,255,.8);font-size:13px;font-weight:600}
+
+/* HOW IT WORKS */
+#how{background:var(--paper)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:70px;position:relative}
+.steps::before{content:'';position:absolute;top:32px;right:12%;left:12%;height:2px;background:linear-gradient(90deg,var(--indigo),var(--gold));opacity:.25}
+.step{text-align:center;padding:0 20px;position:relative}
+.step-num{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--violet));color:#fff;font-family:'Tajawal',sans-serif;font-size:24px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 8px 24px rgba(61,47,160,.35);position:relative;z-index:1}
+.step-title{font-size:16px;font-weight:700;margin-bottom:8px}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* GUIDE */
+#guide{background:#fff}
+.guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-top:60px}
+.guide-visual{border-radius:28px;padding:40px;aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;box-shadow:0 30px 70px rgba(61,47,160,.3)}
+.guide-screen{background:rgba(255,255,255,.1);border-radius:16px;padding:20px;width:100%;border:1px solid rgba(255,255,255,.15)}
+.guide-screen-title{color:rgba(255,255,255,.7);font-size:11px;margin-bottom:8px}
+.guide-screen-content{color:#fff;font-size:15px;font-weight:700}
+.guide-screen-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.15);margin-top:10px;overflow:hidden}
+.guide-screen-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--mint),var(--gold2))}
+.guide-step-num{font-family:'Tajawal',sans-serif;font-size:72px;font-weight:800;color:rgba(61,47,160,.08);line-height:1;margin-bottom:-10px}
+.guide-title{font-size:28px;font-weight:800;margin-bottom:16px}
+.guide-desc{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:24px}
+.guide-points{list-style:none}
+.guide-points li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--border)}
+.guide-points li:last-child{border-bottom:none}
+.guide-point-dot{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--mint));flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.guide-point-dot::after{content:'✓';color:#fff;font-size:10px;font-weight:700}
+
+/* PRICING */
+#pricing{background:var(--paper)}
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:60px}
+.price-card{background:#fff;border-radius:28px;padding:40px 32px;border:2px solid var(--border);transition:all .3s}
+.price-card.featured{border-color:var(--indigo);background:linear-gradient(160deg,#f0eeff,#fff);transform:scale(1.04);box-shadow:0 24px 60px rgba(61,47,160,.2)}
+.price-badge{background:var(--indigo);color:#fff;font-size:11px;font-weight:700;padding:4px 14px;border-radius:100px;display:inline-block;margin-bottom:20px}
+.price-name{font-size:20px;font-weight:800;margin-bottom:8px}
+.price-amount{font-family:'Tajawal',sans-serif;font-size:52px;font-weight:800;color:var(--indigo);display:flex;align-items:flex-start;gap:4px;margin:16px 0}
+.price-currency{font-size:20px;margin-top:10px}
+.price-period{font-size:14px;color:var(--muted);font-weight:400;align-self:flex-end;margin-bottom:8px}
+.price-desc{font-size:13px;color:var(--muted);margin-bottom:24px}
+.price-features{list-style:none;margin-bottom:32px}
+.price-features li{display:flex;align-items:center;gap:10px;font-size:14px;padding:8px 0;border-bottom:1px solid var(--border)}
+.price-features li:last-child{border-bottom:none}
+.chk{color:var(--mint);font-weight:700;flex-shrink:0}
+.price-btn{display:block;text-align:center;padding:14px;border-radius:100px;font-size:14px;font-weight:700;text-decoration:none;transition:all .25s}
+.price-btn.primary{background:var(--indigo);color:#fff;box-shadow:0 6px 24px rgba(61,47,160,.35)}
+.price-btn.primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(61,47,160,.45)}
+.price-btn.outline{border:2px solid var(--border);color:var(--ink)}
+.price-btn.outline:hover{border-color:var(--indigo);color:var(--indigo)}
+
+/* DOWNLOAD */
+#download{background:linear-gradient(135deg,var(--indigo) 0%,#1a0a5e 100%);text-align:center;color:#fff;position:relative;overflow:hidden}
+#download::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 50% 50%,rgba(201,168,76,.15),transparent)}
+#download .section-title{color:#fff}
+#download .section-sub{color:rgba(255,255,255,.65);margin:0 auto 48px}
+#download .section-tag{background:rgba(255,255,255,.1);color:var(--gold2)}
+.download-btns{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.download-btn{display:inline-flex;align-items:center;gap:14px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.25);backdrop-filter:blur(10px);color:#fff;text-decoration:none;padding:18px 32px;border-radius:18px;transition:all .3s;min-width:220px}
+.download-btn:hover{background:rgba(255,255,255,.2);transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.3)}
+.download-btn-icon{font-size:32px}
+.download-btn-text small{display:block;font-size:11px;opacity:.7;margin-bottom:2px}
+.download-btn-text strong{font-size:18px;font-weight:700;font-family:'Tajawal',sans-serif}
+.apk-note{margin-top:24px;color:rgba(255,255,255,.45);font-size:12px;position:relative;z-index:1}
+
+/* FAQ */
+#faq{background:var(--paper)}
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:60px}
+.faq-item{background:#fff;border-radius:16px;padding:24px;border:1px solid var(--border);transition:all .25s}
+.faq-item:hover{border-color:rgba(61,47,160,.3);transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,.06)}
+.faq-q{font-size:15px;font-weight:700;margin-bottom:10px;color:var(--ink)}
+.faq-a{font-size:14px;color:var(--muted);line-height:1.7}
+
+/* FOOTER */
+footer{background:var(--ink);color:rgba(255,255,255,.5);padding:60px 48px 40px}
+.footer-inner{max-width:1280px;margin:0 auto}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:48px;gap:40px}
+.footer-brand p{font-size:14px;margin-top:12px;max-width:280px;line-height:1.7}
+.footer-links h4{color:#fff;font-size:14px;font-weight:700;margin-bottom:16px}
+.footer-links ul{list-style:none}
+.footer-links ul li{margin-bottom:10px}
+.footer-links ul a{color:rgba(255,255,255,.5);text-decoration:none;font-size:13px;transition:color .2s}
+.footer-links ul a:hover{color:var(--gold2)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-bottom p{font-size:12px}
+.footer-gold{color:var(--gold2);font-weight:700}
+
+/* ANIMATIONS */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}.reveal-delay-4{transition-delay:.4s}
+.reveal-delay-5{transition-delay:.5s}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .hero-grid,.guide-grid{grid-template-columns:1fr;gap:48px}
+  .hero-visual{order:-1}
+  .features-grid{grid-template-columns:1fr 1fr}
+  .stores-grid{grid-template-columns:repeat(3,1fr)}
+  .steps{grid-template-columns:1fr 1fr;gap:40px}
+  .steps::before{display:none}
+  .pricing-grid{grid-template-columns:1fr}
+  .price-card.featured{transform:none}
+  .faq-grid{grid-template-columns:1fr}
+  nav{padding:16px 24px}
+  .nav-links{display:none}
+  section{padding:70px 24px}
+}
+@media(max-width:640px){
+  .features-grid,.stores-grid{grid-template-columns:1fr 1fr}
+  .hero-stats{gap:20px}
+  .footer-top{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">PremiumPOS</div>
+  <ul class="nav-links">
+    <li><a href="#features">المميزات</a></li>
+    <li><a href="#stores">أنواع المتاجر</a></li>
+    <li><a href="#guide">دليل الاستخدام</a></li>
+    <li><a href="#pricing">الأسعار</a></li>
+    <li><a href="#faq">الأسئلة الشائعة</a></li>
+    <li><a href="#scan" style="color:var(--mint);font-weight:700">Premium Scan ✨</a></li>
+  </ul>
+  <a href="#download" class="nav-cta">تحميل التطبيق ⬇️</a>
+</nav>
+
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid">
+    <div>
+      <div class="hero-badge"><span></span> نظام نقطة البيع الاحترافي</div>
+      <h1>أدر متجرك<br><span class="h1-accent">باحترافية حقيقية</span></h1>
+      <p class="hero-sub">PremiumPOS — نظام نقطة البيع الذكي الذي يناسب كل أنواع المتاجر. يعمل بدون إنترنت، يحفظ بياناتك على السحابة، ويعطيك تقارير ذكية فورية.</p>
+      <div class="hero-btns">
+        <a href="#download" class="btn-primary">⬇️ حمّل التطبيق مجاناً</a>
+        <a href="#guide" class="btn-secondary">📖 دليل الاستخدام</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item"><span class="stat-num" id="sn1">6</span><span class="stat-lbl">أنواع متاجر</span></div>
+        <div class="stat-item"><span class="stat-num" id="sn2">100%</span><span class="stat-lbl">مزامنة سحابية</span></div>
+        <div class="stat-item"><span class="stat-num" id="sn3">30</span><span class="stat-lbl">يوم تجربة مجانية</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="ring ring-1"></div>
+      <div class="ring ring-2"></div>
+      <div class="ring ring-3"></div>
+      <div class="phone-wrap">
+        <div class="phone-outer">
+          <div class="phone-screen">
+            <div class="phone-ui">
+              <div class="pui-header">
+                <div><div class="pui-greeting">صباح الخير 👋</div><div class="pui-name">لوحة التحكم</div></div>
+                <div class="pui-avatar"></div>
+              </div>
+              <div class="pui-card">
+                <div class="pui-card-label">إيرادات اليوم</div>
+                <div class="pui-card-val">₪ 2,840</div>
+                <div class="pui-card-sub">▲ +18% مقارنة بالأمس</div>
+              </div>
+              <div class="pui-modules">
+                <div class="pui-module"><div class="pui-module-icon">🛒</div><div class="pui-module-name">الكاشير</div></div>
+                <div class="pui-module"><div class="pui-module-icon">📦</div><div class="pui-module-name">المنتجات</div></div>
+                <div class="pui-module"><div class="pui-module-icon">📊</div><div class="pui-module-name">التقارير</div></div>
+                <div class="pui-module"><div class="pui-module-icon">💳</div><div class="pui-module-name">الديون</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-tag">المميزات</span>
+      <h2 class="section-title">كل شيء تحتاجه في مكان واحد</h2>
+      <p class="section-sub">من الكاشير للتقارير للمخزون — نظام متكامل صُمّم خصيصاً لأصحاب المتاجر في الوطن العربي.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon" style="background:rgba(61,47,160,.1)">🛒</div>
+        <h3 class="feature-title">كاشير سريع وذكي</h3>
+        <p class="feature-desc">إضافة منتجات بمسح الباركود أو البحث. خصومات، كوبونات، دفع نقدي وبطاقة ومحفظة. كل شيء في ثوانٍ.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon" style="background:rgba(0,201,167,.1)">☁️</div>
+        <h3 class="feature-title">مزامنة سحابية فورية</h3>
+        <p class="feature-desc">كل بياناتك محفوظة في Firebase. حذف التطبيق وإعادة تثبيته؟ كل شيء يعود كما كان تماماً.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon" style="background:rgba(201,168,76,.1)">📊</div>
+        <h3 class="feature-title">تقارير يومية ذكية</h3>
+        <p class="feature-desc">مقارنة اليوم بالأمس، رسم بياني بالساعة، أكثر المنتجات مبيعاً، وتنبيهات ذكية تلقائية.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon" style="background:rgba(229,57,53,.1)">💳</div>
+        <h3 class="feature-title">إدارة الديون والحسابات</h3>
+        <p class="feature-desc">تتبع ديون الزبائن، سجّل الدفعات، وشاهد شريط تقدم السداد. لا تنسى أي دين بعد الآن.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon" style="background:rgba(0,136,209,.1)">🏭</div>
+        <h3 class="feature-title">إدارة الموردين</h3>
+        <p class="feature-desc">سجّل مشترياتك من كل مورد، تتبع ما دفعت وما تبقى، وحافظ على علاقات تجارية منظمة.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon" style="background:rgba(108,92,231,.1)">👥</div>
+        <h3 class="feature-title">إدارة الموظفين</h3>
+        <p class="feature-desc">أضف موظفين بصلاحيات محددة. كل موظف له PIN خاص. راقب أداء كل كاشير في الوقت الحقيقي.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon" style="background:rgba(0,201,167,.1)">📦</div>
+        <h3 class="feature-title">مخزون ذكي</h3>
+        <p class="feature-desc">تتبع المخزون تلقائياً عند كل بيع. تنبيهات عند انخفاض الكميات. وحدات متعددة لكل نوع متجر.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon" style="background:rgba(201,168,76,.1)">🎟️</div>
+        <h3 class="feature-title">نظام الخصومات والكوبونات</h3>
+        <p class="feature-desc">خصم نسبة أو مبلغ ثابت أو كوبون مخصص. أنشئ حملات تسويقية وتتبع استخدامها بدقة.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon" style="background:rgba(61,47,160,.1)">🖨️</div>
+        <h3 class="feature-title">طباعة الفواتير</h3>
+        <p class="feature-desc">طباعة لاسلكية عبر Bluetooth أو شبكة WiFi. فواتير احترافية مع شعار متجرك ورسالة ختامية.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="stores">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-tag">أنواع المتاجر</span>
+      <h2 class="section-title">يناسب كل متجر</h2>
+      <p class="section-sub">PremiumPOS يتكيّف مع طبيعة عملك تلقائياً — وحدات مخصصة وأدوات ملائمة لكل نوع.</p>
+    </div>
+    <div class="stores-grid">
+      <div class="store-card reveal reveal-delay-1"><span class="store-emoji">🏪</span><div class="store-name">سوبرماركت / بقالة</div></div>
+      <div class="store-card reveal reveal-delay-2"><span class="store-emoji">💊</span><div class="store-name">صيدلية</div></div>
+      <div class="store-card reveal reveal-delay-3"><span class="store-emoji">☕</span><div class="store-name">مطعم / كافيه</div></div>
+      <div class="store-card reveal reveal-delay-4"><span class="store-emoji">👗</span><div class="store-name">ملابس / أزياء</div></div>
+      <div class="store-card reveal reveal-delay-5"><span class="store-emoji">📱</span><div class="store-name">إلكترونيات</div></div>
+      <div class="store-card reveal reveal-delay-1"><span class="store-emoji">🥩</span><div class="store-name">جزارة / خضار</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center">
+      <span class="section-tag">كيف يعمل؟</span>
+      <h2 class="section-title">ابدأ في 4 خطوات بسيطة</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal reveal-delay-1">
+        <div class="step-num">١</div>
+        <h3 class="step-title">حمّل التطبيق</h3>
+        <p class="step-desc">نزّل ملف APK مباشرة على هاتفك Android. تثبيت سريع في أقل من دقيقة.</p>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step-num">٢</div>
+        <h3 class="step-title">أنشئ متجرك</h3>
+        <p class="step-desc">سجّل ببريدك الإلكتروني، أدخل بيانات متجرك واختر النوع المناسب.</p>
+      </div>
+      <div class="step reveal reveal-delay-3">
+        <div class="step-num">٣</div>
+        <h3 class="step-title">أضف منتجاتك</h3>
+        <p class="step-desc">أضف منتجاتك يدوياً أو استورد ملف Excel. امسح الباركود لسرعة أكبر.</p>
+      </div>
+      <div class="step reveal reveal-delay-4">
+        <div class="step-num">٤</div>
+        <h3 class="step-title">ابدأ البيع!</h3>
+        <p class="step-desc">افتح الكاشير وابدأ بيعك! كل شيء يُحفظ تلقائياً في السحابة.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="guide">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center;margin-bottom:20px">
+      <span class="section-tag">دليل الاستخدام</span>
+      <h2 class="section-title">كل شيء واضح وسهل</h2>
+    </div>
+
+    <div class="guide-grid">
+      <div class="guide-visual reveal" style="background:linear-gradient(135deg,#3d2fa0,#6c5ce7)">
+        <div class="guide-screen">
+          <div class="guide-screen-title">🛒 الكاشير</div>
+          <div class="guide-screen-content">إجمالي الطلب: ₪ 125.00</div>
+          <div class="guide-screen-bar"><div class="guide-screen-bar-fill" style="width:75%"></div></div>
+        </div>
+        <div class="guide-screen">
+          <div class="guide-screen-title">طريقة الدفع</div>
+          <div class="guide-screen-content">💵 نقدي &nbsp;&nbsp; 💳 بطاقة &nbsp;&nbsp; 📱 محفظة</div>
+        </div>
+        <div class="guide-screen">
+          <div class="guide-screen-title">الخصم</div>
+          <div class="guide-screen-content">🎟️ كوبون &nbsp;·&nbsp; نسبة % &nbsp;·&nbsp; مبلغ ثابت</div>
+        </div>
+      </div>
+      <div style="padding:20px 0" class="reveal reveal-delay-2">
+        <div class="guide-step-num">01</div>
+        <h3 class="guide-title">الكاشير السريع</h3>
+        <p class="guide-desc">اختر المنتجات أو امسح الباركود، أضف الخصومات، واختر طريقة الدفع. كل عملية في ثوانٍ معدودة.</p>
+        <ul class="guide-points">
+          <li><div class="guide-point-dot"></div>بحث سريع بالاسم أو الباركود</li>
+          <li><div class="guide-point-dot"></div>خصم نسبة أو مبلغ أو كوبون مخصص</li>
+          <li><div class="guide-point-dot"></div>دفع نقدي / بطاقة / محفظة / على الحساب</li>
+          <li><div class="guide-point-dot"></div>طباعة فاتورة فورية</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="guide-grid" style="margin-top:80px;direction:ltr">
+      <div style="padding:20px 0;direction:rtl" class="reveal">
+        <div class="guide-step-num">02</div>
+        <h3 class="guide-title">تقارير يومية ذكية</h3>
+        <p class="guide-desc">اعرف أداء متجرك بلمحة. رسم بياني بالساعة، مقارنة بالأمس، وتنبيهات ذكية تلقائية.</p>
+        <ul class="guide-points">
+          <li><div class="guide-point-dot"></div>مقارنة اليوم بالأمس بنسبة مئوية</li>
+          <li><div class="guide-point-dot"></div>رسم بياني للمبيعات كل ساعة (0-23)</li>
+          <li><div class="guide-point-dot"></div>تنبيهات ذكية: ارتفاع، انخفاض، ذروة</li>
+          <li><div class="guide-point-dot"></div>تقارير أسبوعية وشهرية تفصيلية</li>
+        </ul>
+      </div>
+      <div class="guide-visual reveal reveal-delay-2" style="background:linear-gradient(135deg,#1a3a5c,#0d6e6e)">
+        <div class="guide-screen">
+          <div class="guide-screen-title">📊 إيرادات اليوم</div>
+          <div class="guide-screen-content">₪ 3,250 &nbsp; <span style="color:#00c9a7;font-size:12px">▲ +22%</span></div>
+        </div>
+        <div class="guide-screen">
+          <div class="guide-screen-title">⏰ أعلى ساعة مبيعات</div>
+          <div class="guide-screen-content">الساعة 2 م — ₪ 890</div>
+        </div>
+        <div class="guide-screen">
+          <div class="guide-screen-title">🏆 الأكثر مبيعاً اليوم</div>
+          <div class="guide-screen-content">منتج أ · منتج ب · منتج ج</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-grid" style="margin-top:80px">
+      <div class="guide-visual reveal" style="background:linear-gradient(135deg,#5c1a1a,#a02020)">
+        <div class="guide-screen">
+          <div class="guide-screen-title">💳 ديون الزبائن</div>
+          <div class="guide-screen-content">محمد — ₪ 250 متبقي</div>
+          <div class="guide-screen-bar"><div class="guide-screen-bar-fill" style="width:40%"></div></div>
+        </div>
+        <div class="guide-screen">
+          <div class="guide-screen-title">تسجيل دفعة سريعة</div>
+          <div class="guide-screen-content">₪ 10 · ₪ 50 · ₪ 100 · ₪ 250 ✓</div>
+        </div>
+        <div class="guide-screen">
+          <div class="guide-screen-title">الإجمالي النشط</div>
+          <div class="guide-screen-content" style="color:#ff8a80">₪ 1,840 ديون نشطة</div>
+        </div>
+      </div>
+      <div style="padding:20px 0" class="reveal reveal-delay-2">
+        <div class="guide-step-num">03</div>
+        <h3 class="guide-title">إدارة الديون</h3>
+        <p class="guide-desc">لا تنسى أي حساب. سجّل الديون من الكاشير مباشرة أو يدوياً، وتابع كل دفعة بشكل منظم.</p>
+        <ul class="guide-points">
+          <li><div class="guide-point-dot"></div>إضافة دين من الكاشير بضغطة واحدة</li>
+          <li><div class="guide-point-dot"></div>اختر زبوناً موجوداً أو أضف جديداً</li>
+          <li><div class="guide-point-dot"></div>شريط تقدم السداد لكل زبون</li>
+          <li><div class="guide-point-dot"></div>سجل كامل لكل الدفعات مع التواريخ</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="guide-grid" style="margin-top:80px;direction:ltr">
+      <div style="padding:20px 0;direction:rtl" class="reveal">
+        <div class="guide-step-num">04</div>
+        <h3 class="guide-title">إدارة الموردين</h3>
+        <p class="guide-desc">أضف موردينك وتتبع مشترياتك منهم. اعرف ما دفعته وما تبقى بضغطة واحدة.</p>
+        <ul class="guide-points">
+          <li><div class="guide-point-dot"></div>بيانات كاملة لكل مورد</li>
+          <li><div class="guide-point-dot"></div>تسجيل المشتريات الجديدة</li>
+          <li><div class="guide-point-dot"></div>سجل دفعات مفصل لكل مورد</li>
+          <li><div class="guide-point-dot"></div>إجمالي الديون للموردين دفعة واحدة</li>
+        </ul>
+      </div>
+      <div class="guide-visual reveal reveal-delay-2" style="background:linear-gradient(135deg,#0a3d62,#1e5799)">
+        <div class="guide-screen">
+          <div class="guide-screen-title">🏭 الموردون</div>
+          <div class="guide-screen-content">مورد A — مشتريات: ₪ 5,200</div>
+        </div>
+        <div class="guide-screen">
+          <div class="guide-screen-title">المدفوع والمتبقي</div>
+          <div class="guide-screen-content">مدفوع: ₪ 3,000 &nbsp;·&nbsp; متبقي: ₪ 2,200</div>
+        </div>
+        <div class="guide-screen">
+          <div class="guide-screen-title">📋 آخر الدفعات</div>
+          <div class="guide-screen-content">₪ 500 · 15 يناير ✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center">
+      <span class="section-tag">الأسعار</span>
+      <h2 class="section-title">استثمار بسيط، عائد كبير</h2>
+      <p class="section-sub" style="margin:0 auto">جرّب مجاناً لمدة 30 يوماً. لا بطاقة ائتمان مطلوبة.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal reveal-delay-1">
+        <div class="price-name">تجربة مجانية</div>
+        <div class="price-amount"><span class="price-currency">₪</span><span>0</span><span class="price-period">/ 30 يوم</span></div>
+        <p class="price-desc">جرّب كل المميزات بدون قيود</p>
+        <ul class="price-features">
+          <li><span class="chk">✓</span> كل مميزات النظام</li>
+          <li><span class="chk">✓</span> عدد طلبات غير محدود</li>
+          <li><span class="chk">✓</span> مزامنة سحابية كاملة</li>
+          <li><span class="chk">✓</span> دعم فني متاح</li>
+        </ul>
+        <a href="#download" class="price-btn outline">ابدأ مجاناً</a>
+      </div>
+      <div class="price-card featured reveal reveal-delay-2">
+        <div class="price-badge">الأكثر شيوعاً ⭐</div>
+        <div class="price-name">الاشتراك الشهري</div>
+        <div class="price-amount"><span class="price-currency">₪</span><span>49</span><span class="price-period">/ شهر</span></div>
+        <p class="price-desc">للمتاجر الجادة التي تريد النمو</p>
+        <ul class="price-features">
+          <li><span class="chk">✓</span> كل مميزات النظام</li>
+          <li><span class="chk">✓</span> موظفون غير محدودون</li>
+          <li><span class="chk">✓</span> تقارير ذكية متقدمة</li>
+          <li><span class="chk">✓</span> مزامنة سحابية فورية</li>
+          <li><span class="chk">✓</span> دعم فني بأولوية</li>
+          <li><span class="chk">✓</span> تحديثات مستمرة</li>
+        </ul>
+        <a href="#download" class="price-btn primary">اشترك الآن</a>
+      </div>
+      <div class="price-card reveal reveal-delay-3">
+        <div class="price-name">الاشتراك السنوي</div>
+        <div class="price-amount"><span class="price-currency">₪</span><span>399</span><span class="price-period">/ سنة</span></div>
+        <p class="price-desc">وفّر أكثر من شهرين 🎉</p>
+        <ul class="price-features">
+          <li><span class="chk">✓</span> كل مميزات الخطة الشهرية</li>
+          <li><span class="chk">✓</span> توفير ₪ 189 سنوياً</li>
+          <li><span class="chk">✓</span> أولوية قصوى في الدعم</li>
+          <li><span class="chk">✓</span> ميزات حصرية للمشتركين</li>
+        </ul>
+        <a href="#download" class="price-btn outline">اشترك سنوياً</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<style>
+/* ─── PREMIUM SCAN ─── */
+#scan{background:linear-gradient(160deg,#0d0d1a 0%,#0a1628 50%,#0d1f0d 100%);position:relative;overflow:hidden}
+#scan::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 30% 50%,rgba(0,201,167,.12),transparent),radial-gradient(ellipse 50% 60% at 80% 30%,rgba(0,180,80,.1),transparent)}
+.scan-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:1}
+.scan-tag{background:rgba(0,201,167,.12);color:var(--mint);border-color:rgba(0,201,167,.25)}
+.scan-title{font-family:'Tajawal',sans-serif;font-size:clamp(32px,4vw,52px);font-weight:800;line-height:1.15;margin-bottom:20px;color:#fff}
+.scan-sub{font-size:17px;color:rgba(255,255,255,.6);line-height:1.8;margin-bottom:36px}
+.scan-features{list-style:none;margin-bottom:40px}
+.scan-features li{display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,.8);padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.scan-features li:last-child{border-bottom:none}
+.scan-dot{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--mint),#00a86b);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px}
+.scan-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--mint),#00a86b);color:#fff;padding:16px 36px;border-radius:100px;font-size:15px;font-weight:700;text-decoration:none;transition:all .25s;box-shadow:0 6px 28px rgba(0,201,167,.4)}
+.scan-btn:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,201,167,.5)}
+/* SCAN PHONE */
+.scan-visual{display:flex;justify-content:center;position:relative}
+.scan-phone{width:260px;background:linear-gradient(145deg,#0a1a0a,#0d2d0d);border-radius:44px;padding:14px;box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 1px rgba(0,201,167,.15),0 0 60px rgba(0,201,167,.08)}
+.scan-screen{background:#000;border-radius:34px;overflow:hidden;aspect-ratio:9/19;position:relative;display:flex;flex-direction:column}
+.scan-viewfinder{flex:1;position:relative;background:linear-gradient(160deg,#020d02,#041404);display:flex;align-items:center;justify-content:center}
+.scan-frame{width:160px;height:160px;position:relative}
+.scan-frame::before,.scan-frame::after{content:'';position:absolute;width:40px;height:40px;border-color:var(--mint);border-style:solid}
+.scan-frame::before{top:0;right:0;border-width:3px 3px 0 0;border-radius:0 8px 0 0}
+.scan-frame::after{bottom:0;left:0;border-width:0 0 3px 3px;border-radius:0 0 0 8px}
+.scan-frame-tl,.scan-frame-br{position:absolute;width:40px;height:40px;border-color:var(--mint);border-style:solid}
+.scan-frame-tl{top:0;left:0;border-width:3px 0 0 3px;border-radius:8px 0 0 0}
+.scan-frame-br{bottom:0;right:0;border-width:0 3px 3px 0;border-radius:0 0 8px 0}
+.scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--mint),transparent);animation:scanline 2s ease-in-out infinite;box-shadow:0 0 8px var(--mint)}
+@keyframes scanline{0%{top:10%}50%{top:90%}100%{top:10%}}
+.scan-barcode-preview{position:absolute;width:100px;height:50px;opacity:.3}
+.scan-barcode-preview div{height:100%;display:flex;gap:2px;align-items:stretch}
+.scan-barcode-preview div span{background:rgba(0,201,167,.8);flex:1}
+.scan-barcode-preview div span:nth-child(2n){flex:2}
+.scan-barcode-preview div span:nth-child(3n){flex:.5}
+.scan-result{background:#0a1a0a;padding:14px;border-top:1px solid rgba(0,201,167,.2)}
+.scan-result-label{color:rgba(255,255,255,.4);font-size:9px;margin-bottom:4px}
+.scan-result-name{color:#fff;font-size:13px;font-weight:700;margin-bottom:2px}
+.scan-result-price{color:var(--mint);font-size:15px;font-weight:800;font-family:'Tajawal',sans-serif}
+.scan-result-stock{color:rgba(255,255,255,.4);font-size:9px;margin-top:2px}
+/* glow rings */
+.scan-ring{position:absolute;border-radius:50%;border:1px solid rgba(0,201,167,.1);animation:spin linear infinite}
+.sr1{width:400px;height:400px;top:-100px;left:-100px;animation-duration:30s}
+.sr2{width:280px;height:280px;bottom:-50px;right:-80px;animation-duration:22s}
+/* comparison */
+.scan-compare{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:60px;position:relative;z-index:1}
+.compare-card{border-radius:20px;padding:28px;border:1px solid}
+.compare-pos{background:rgba(61,47,160,.08);border-color:rgba(61,47,160,.2)}
+.compare-scan{background:rgba(0,201,167,.08);border-color:rgba(0,201,167,.25)}
+.compare-title{font-size:16px;font-weight:700;margin-bottom:16px}
+.compare-pos .compare-title{color:rgba(255,255,255,.9)}
+.compare-scan .compare-title{color:var(--mint)}
+.compare-item{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.6);margin-bottom:8px}
+.compare-item .ci{font-size:14px}
+@media(max-width:1024px){.scan-grid,.scan-compare{grid-template-columns:1fr}}
+</style>
+
+<!-- PREMIUM SCAN -->
+<section id="scan">
+  <div class="section-inner">
+    <div class="scan-grid">
+      <!-- Visual -->
+      <div class="scan-visual reveal">
+        <div class="scan-ring sr1"></div>
+        <div class="scan-ring sr2"></div>
+        <div class="phone-wrap">
+          <div class="scan-phone">
+            <div class="scan-screen">
+              <div class="scan-viewfinder">
+                <div class="scan-frame">
+                  <div class="scan-frame-tl"></div>
+                  <div class="scan-frame-br"></div>
+                  <div class="scan-line"></div>
+                  <div class="scan-barcode-preview">
+                    <div>
+                      <span></span><span></span><span></span><span></span>
+                      <span></span><span></span><span></span><span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="scan-result">
+                <div class="scan-result-label">✅ تم التعرف على المنتج</div>
+                <div class="scan-result-name">حليب كامل الدسم 1L</div>
+                <div class="scan-result-price">₪ 5.50</div>
+                <div class="scan-result-stock">المخزون: 48 قطعة · أرخص متجر ✓</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="reveal reveal-delay-2">
+        <span class="section-tag scan-tag">تطبيق مساعد مجاني</span>
+        <h2 class="scan-title">Premium Scan<br>امسح أي منتج<br><span style="color:var(--mint)">قارن الأسعار فوراً</span></h2>
+        <p class="scan-sub">تطبيق مستقل يعمل مع كل متاجر PremiumPOS. امسح باركود أي منتج واعرف سعره في كل المتاجر المشتركة — ومن الأرخص — في ثانية واحدة.</p>
+        <ul class="scan-features">
+          <li><div class="scan-dot">📷</div>مسح باركود فوري بكاميرا الهاتف مع فلاش</li>
+          <li><div class="scan-dot">💰</div>عرض السعر الفوري من أي متجر مشترك</li>
+          <li><div class="scan-dot">⚖️</div>مقارنة الأسعار بين جميع المتاجر تلقائياً</li>
+          <li><div class="scan-dot">🗺️</div>اختيار المتجر بالقرب منك أو بمسح QR مباشرة</li>
+          <li><div class="scan-dot">📋</div>سجل كامل لكل عمليات المسح السابقة</li>
+          <li><div class="scan-dot">🌙</div>وضع ليلي / نهاري · Android وiOS</li>
+        </ul>
+        <a href="https://wa.me/972567044600?text=أريد%20تحميل%20Premium%20Scan" target="_blank" class="scan-btn">⬇️ تحميل Premium Scan</a>
+      </div>
+    </div>
+
+    <!-- كيف تعمل المقارنة -->
+    <div style="text-align:center;margin-top:80px;margin-bottom:40px" class="reveal">
+      <h3 style="color:#fff;font-size:24px;font-weight:800;margin-bottom:8px">كيف يعمل Premium Scan؟</h3>
+      <p style="color:rgba(255,255,255,.5);font-size:15px">٣ خطوات بسيطة للحصول على أفضل سعر</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;position:relative;z-index:1" class="reveal">
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(0,201,167,.15);border-radius:20px;padding:28px;text-align:center">
+        <div style="font-size:36px;margin-bottom:16px">🏪</div>
+        <div style="color:#fff;font-size:16px;font-weight:700;margin-bottom:8px">١. اختر المتجر</div>
+        <div style="color:rgba(255,255,255,.55);font-size:13px;line-height:1.6">اختر من قائمة المتاجر المشتركة أو امسح QR code المتجر مباشرة للدخول الفوري</div>
+      </div>
+      <div style="background:rgba(0,201,167,.06);border:1px solid rgba(0,201,167,.25);border-radius:20px;padding:28px;text-align:center">
+        <div style="font-size:36px;margin-bottom:16px">📷</div>
+        <div style="color:var(--mint);font-size:16px;font-weight:700;margin-bottom:8px">٢. امسح الباركود</div>
+        <div style="color:rgba(255,255,255,.55);font-size:13px;line-height:1.6">وجّه الكاميرا نحو باركود المنتج. التطبيق يتعرف عليه فوراً مع دعم الفلاش للإضاءة المنخفضة</div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(0,201,167,.15);border-radius:20px;padding:28px;text-align:center">
+        <div style="font-size:36px;margin-bottom:16px">⚖️</div>
+        <div style="color:#fff;font-size:16px;font-weight:700;margin-bottom:8px">٣. قارن الأسعار</div>
+        <div style="color:rgba(255,255,255,.55);font-size:13px;line-height:1.6">شاهد سعر المنتج في هذا المتجر ومقارنته بكل المتاجر الأخرى — من الأرخص للأغلى</div>
+      </div>
+    </div>
+
+    <!-- مقارنة التطبيقين -->
+    <div style="text-align:center;margin-top:70px;margin-bottom:32px" class="reveal">
+      <h3 style="color:#fff;font-size:22px;font-weight:800;margin-bottom:8px">PremiumPOS + Premium Scan = منظومة متكاملة</h3>
+      <p style="color:rgba(255,255,255,.5);font-size:14px">جهازان يعملان معاً من نفس قاعدة البيانات</p>
+    </div>
+    <div class="scan-compare">
+      <div class="compare-card compare-pos reveal reveal-delay-1">
+        <div class="compare-title">📲 PremiumPOS — للمتجر</div>
+        <div class="compare-item"><span class="ci">🛒</span> كاشير البيع الرئيسي</div>
+        <div class="compare-item"><span class="ci">📦</span> إدارة المخزون والمنتجات</div>
+        <div class="compare-item"><span class="ci">📊</span> التقارير اليومية الذكية</div>
+        <div class="compare-item"><span class="ci">💳</span> تتبع الديون والموردين</div>
+        <div class="compare-item"><span class="ci">👥</span> إدارة الموظفين والصلاحيات</div>
+        <div style="color:rgba(255,255,255,.3);font-size:11px;margin-top:12px">للمتجر · Android فقط</div>
+      </div>
+      <div class="compare-card compare-scan reveal reveal-delay-2">
+        <div class="compare-title">📷 Premium Scan — للزبون</div>
+        <div class="compare-item"><span class="ci">⚡</span> مسح باركود فوري</div>
+        <div class="compare-item"><span class="ci">💰</span> عرض السعر لحظياً</div>
+        <div class="compare-item"><span class="ci">⚖️</span> مقارنة أسعار بين المتاجر</div>
+        <div class="compare-item"><span class="ci">🗺️</span> اختيار المتجر بالموقع الجغرافي</div>
+        <div class="compare-item"><span class="ci">📋</span> سجل عمليات المسح السابقة</div>
+        <div style="color:var(--mint);font-size:11px;margin-top:12px;font-weight:700">مجاني · Android وiOS</div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="download">
+  <div class="section-inner">
+    <span class="section-tag reveal">التحميل</span>
+    <h2 class="section-title reveal">حمّل PremiumPOS الآن</h2>
+    <p class="section-sub reveal">متوفر على Android. جرّب مجاناً لمدة 30 يوماً كاملة.</p>
+    <div class="download-btns reveal">
+      <a href="#" class="download-btn" onclick="alert('قريباً على Google Play! 🚀');return false">
+        <div class="download-btn-icon">▶</div>
+        <div class="download-btn-text"><small>تحميل من</small><strong>Google Play</strong></div>
+      </a>
+      <a href="premiumpos.apk" download class="download-btn">
+        <div class="download-btn-icon">⬇</div>
+        <div class="download-btn-text"><small>تحميل مباشر</small><strong>ملف APK</strong></div>
+      </a>
+      <a href="https://wa.me/972567044600" class="download-btn" target="_blank">
+        <div class="download-btn-icon">💬</div>
+        <div class="download-btn-text"><small>تواصل معنا</small><strong>واتساب</strong></div>
+      </a>
+    </div>
+    <p class="apk-note reveal">⚠️ عند تثبيت APK: اذهب لـ الإعدادات ← التطبيقات ← السماح بمصادر غير معروفة</p>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center">
+      <span class="section-tag">الأسئلة الشائعة</span>
+      <h2 class="section-title">لديك سؤال؟</h2>
+    </div>
+    <div class="faq-grid">
+      <div class="faq-item reveal reveal-delay-1">
+        <div class="faq-q">🌐 هل يعمل بدون إنترنت؟</div>
+        <div class="faq-a">نعم! التطبيق يعمل بشكل كامل offline. عند عودة الاتصال تُرفع البيانات تلقائياً للسحابة بدون أي تدخل منك.</div>
+      </div>
+      <div class="faq-item reveal reveal-delay-2">
+        <div class="faq-q">🔒 هل بياناتي آمنة؟</div>
+        <div class="faq-a">بياناتك محفوظة في Firebase من Google بأعلى معايير الأمان. لا أحد يستطيع الوصول إليها غيرك.</div>
+      </div>
+      <div class="faq-item reveal reveal-delay-3">
+        <div class="faq-q">👥 كم عدد الموظفين الذين يمكنني إضافتهم؟</div>
+        <div class="faq-a">لا يوجد حد. أضف عدداً غير محدود من الموظفين بصلاحيات مختلفة — كاشير أو مشرف.</div>
+      </div>
+      <div class="faq-item reveal reveal-delay-4">
+        <div class="faq-q">🗑️ ماذا يحدث إذا حذفت التطبيق؟</div>
+        <div class="faq-a">لا تقلق! كل بياناتك محفوظة على السحابة. أعد التثبيت وسجّل دخولك، وستجد كل شيء كما تركته تماماً.</div>
+      </div>
+      <div class="faq-item reveal reveal-delay-1">
+        <div class="faq-q">🖨️ هل يدعم طابعات الفواتير؟</div>
+        <div class="faq-a">نعم! يدعم الطباعة عبر Bluetooth وWiFi مع معظم الطابعات الحرارية الشائعة في السوق.</div>
+      </div>
+      <div class="faq-item reveal reveal-delay-2">
+        <div class="faq-q">📊 هل يمكنني استيراد منتجاتي من Excel؟</div>
+        <div class="faq-a">بالتأكيد! ارفع ملف Excel به منتجاتك وسيستوردها التطبيق دفعة واحدة مع كل بياناتها.</div>
+      </div>
+      <div class="faq-item reveal reveal-delay-3">
+        <div class="faq-q">💊 هل يدعم الصيدليات؟</div>
+        <div class="faq-a">نعم، مع ميزات خاصة: بيع بالعلبة أو الشريط أو الحبة، تتبع تاريخ الانتهاء، وإدارة المخزون الطبي بدقة.</div>
+      </div>
+      <div class="faq-item reveal reveal-delay-3" style="background:linear-gradient(135deg,rgba(0,201,167,.06),rgba(0,201,167,.02));border-color:rgba(0,201,167,.2)">
+        <div class="faq-q" style="color:#00c9a7">💬 كيف أتواصل معكم مباشرة؟</div>
+        <div class="faq-a">نحن متاحون عبر <a href="https://wa.me/972567044600" target="_blank" style="color:#00c9a7;font-weight:700">واتساب</a> أو <a href="mailto:devyazanabuali@gmail.com" style="color:#00c9a7;font-weight:700">البريد الإلكتروني</a> أو <a href="https://www.instagram.com/premiumpos.systems" target="_blank" style="color:#00c9a7;font-weight:700">Instagram</a>. نرد خلال ساعات.</div>
+      </div>
+      <div class="faq-item reveal reveal-delay-4">
+        <div class="faq-q">📱 هل يعمل على iOS؟</div>
+        <div class="faq-a">حالياً يعمل على Android فقط. نسخة iOS قيد التطوير وستُطلق قريباً. سجّل اهتمامك عبر WhatsApp.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="nav-logo" style="font-size:28px">PremiumPOS</div>
+        <p>نظام نقطة البيع الاحترافي المصمم لأصحاب المتاجر في الوطن العربي. سريع، موثوق، وجميل.</p>
+      </div>
+      <div class="footer-links">
+        <h4>الروابط السريعة</h4>
+        <ul>
+          <li><a href="#features">المميزات</a></li>
+          <li><a href="#stores">أنواع المتاجر</a></li>
+          <li><a href="#guide">دليل الاستخدام</a></li>
+          <li><a href="#pricing">الأسعار</a></li>
+          <li><a href="#download">تحميل التطبيق</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>تواصل معنا</h4>
+        <ul>
+          <li><a href="https://wa.me/972567044600" target="_blank">واتساب 💬</a></li>
+          <li><a href="mailto:devyazanabuali@gmail.com">البريد الإلكتروني ✉️</a></li>
+          <li><a href="https://www.instagram.com/premiumpos.systems?igsh=cnNmYW9zdWM4d245" target="_blank">Instagram 📸</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 <span class="footer-gold">PremiumPOS</span>. جميع الحقوق محفوظة.</p>
+      <p>صُنع بـ ❤️ للمتاجر العربية</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') })
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').style.boxShadow = window.scrollY > 50 ? '0 4px 30px rgba(0,0,0,.1)' : 'none';
+});
+</script>
+</body>
+</html>
